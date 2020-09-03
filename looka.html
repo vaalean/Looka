@@ -1,0 +1,143 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+<style>
+
+
+ body {background-color:#000000;}
+ P {color: green;}
+ div {float:right;}
+ #ok {color:lime;font-size:200%;}
+ #comm {color:grey;font-size:200%;}
+ .stat {position:absolute;top:10px;right:10px;}
+ #urls {color:lime;text-align:center;font-size:150%;height:50px;}
+
+
+@media screen and (orientation: portrait) {
+    #email {width: 70%; height:5%;}
+    #butt  {width: 20%; height:5%;}
+    h1 {font-size:500%;color:green; text-align:center;margin-top:20%;}
+    #urls {color:lime;text-align:center;}             
+#ip {font-size:200%;color:green;position:absolute;top:40px;right:10px;}
+}
+
+ @media screen and (orientation: landscape) {
+    #email {width: 50%;} 
+    #butt  {width: 10%;}
+    h1 {font-size:800%;color:green; text-align:center;margin-top:10%;}
+    P {font-size:23px;}
+    #ip {font-size:200%;color:green;position:absolute;top:10px;left:10px;}
+
+
+}
+
+</style>
+
+</head>
+<body>
+
+<H1>LOOK@</H1>
+<h5 id="urls">URLS</h5>
+<div id="ip">0.0.0.0</div>
+
+
+<div class="stat">
+<div id="comm">0</div><div id="ok" >0/</div>
+</div>
+
+
+<P>Ancient legends of Netstalking say that there's a certain 'Silent House' hidden in the deeps of the webs. Many stalkers who dared look for it never came back. 
+But what is that ? A cite that has created itself ? A gateway to another worlds ?  
+
+<P>By taking part in this global project LOOK@ you help to dig out the multilevelest domain name (the more dots the better!)
+While you are reading this Javacript is periodically sending sinchronous GET requests with random IP adresses to the main Google DNS cite
+
+<P>All data you find is periodically stored via PHP script in texts files that are getting fatter and fatter daily. And <B><U>YOU</U></B> help it to grow more!
+In some time (approximately 1 month) there will appear the link to the preliminary results of the Project. We shall also try to share the results of the search with you. Follow us!
+
+<P>Stay here with us as much as you can and enjoy watching the growing of your personal counter of sucessful reguests. The counters of yours are located in the top right corner of the page. 
+<P>You may easily fix this page in your favorite browser. Share the link with your friends and classmates
+Let's fill up the database with all the FQDNs and find the Silent House together revealing the most mystical secret of World Wide Web !<br><br>
+
+<center><input type="email" value="Enter email to be informed" id="email">
+<input type="submit" onclick="emailer()" id="butt" value="Send">
+</center>
+
+<script>
+
+var datas=[]
+datas.length=0
+var ok=0
+var comm=0;
+
+var rq=new XMLHttpRequest()
+var meil=new XMLHttpRequest()
+
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : 0;
+}
+
+
+function asker(){
+ 
+ a=Math.ceil(Math.random()*255)
+ b=Math.ceil(Math.random()*255)
+ c=Math.ceil(Math.random()*255)
+ d=Math.ceil(Math.random()*255)
+ ask=a.toString()+'.'+b.toString()+'.'+c.toString()+'.'+d.toString();
+ document.getElementById("ip").innerText=ask
+
+ body = "name="+ask+".in-addr.arpa" + "&type=PTR";
+ rq.open("GET", "https://dns.google/resolve?"+body,false);
+ rq.send();
+
+ ans=JSON.parse(rq.responseText).Answer
+ if (ans!==undefined)
+ {
+  ans=ans[0].data
+  datas.push(ans)
+  ok++
+  document.getElementById("ok").innerText=ok+"/"
+  document.getElementById("urls").innerText=ans
+ }
+ comm++
+ document.cookie = "ok="+ok;
+ document.cookie = "comm="+comm;
+
+ document.getElementById("comm").innerText=comm
+  
+  if (datas.length>=5){
+   body = "str="+datas.join(';')
+   rq.open('POST', 'http://home.onego.ru/~stingray/looka.php',false);
+   rq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+   rq.send(body);
+   datas.lenght=0;
+   datas=[];
+  }
+ 
+ setTimeout(asker,1)
+}
+
+
+  document.getElementById("ok").innerText=getCookie("ok")+"/"
+  document.getElementById("comm").innerText=getCookie("comm")
+  ok=getCookie("ok")
+  comm=getCookie("comm")
+
+ function emailer(){
+  meil.open("GET", "emailer.php?email="+document.getElementById("email").value,false);
+  meil.send();
+  document.getElementById("email").value="Sent! We will inform you. Stay with us."
+
+ }
+
+ asker()
+
+
+</script>
+</body>
